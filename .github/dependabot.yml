@@ -4,6 +4,15 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    groups:
+      dev-dependencies:
+        dependency-type: development
+    ignore:
+      # The library supports Node 18. Majors of jalaali-js, TypeScript, tsup,
+      # vite and vitest now require Node 20+, so they are taken deliberately in
+      # a planned release that raises "engines", not through automatic PRs.
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
   - package-ecosystem: github-actions
     directory: /
     schedule:
