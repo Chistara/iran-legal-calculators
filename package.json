@@ -60,7 +60,7 @@
     "prepublishOnly": "npm run typecheck && npm test && npm run build"
   },
   "dependencies": {
-    "jalaali-js": "^1.2.8"
+    "jalaali-js": "^2.0.1"
   },
   "devDependencies": {
     "@types/jalaali-js": "^1.2.0",
