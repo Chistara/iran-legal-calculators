@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Node ${{ matrix.node-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [18, 20, 22]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run typecheck
+
+      - run: npm test
+
+      - run: npm run build
+
+      - name: Smoke-test the built ESM and CJS entry points
+        env:
+          TZ: Asia/Tehran
+        run: |
+          node -e "const l=require('./dist/index.cjs'); if (l.formatJalaliDate(l.addStatutoryDeadlineDays('1400/04/10',20,'service'))!=='۱۴۰۰/۰۴/۳۱') process.exit(1)"
+          node --input-type=module -e "import * as l from './dist/index.js'; if (l.isWorkingDay('1405/01/01')!==false) process.exit(1)"
+
+      - run: npm pack --dry-run
